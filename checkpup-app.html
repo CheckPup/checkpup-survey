@@ -691,7 +691,7 @@ function App(){
     const sc=score(ans);
     const f=flags(ans,ctx);
     setFl(f);
-    try{fetch("https://checkpup-platform.vercel.app/api/submit-survey",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dog:{name:profile.name,breed_id:profile.breed,breed_label:profile.breedLabel,age_id:profile.age,age_label:profile.ageLabel,body_type:profile.bodyType,activity_level:profile.activity,diet_id:profile.diet,diet_label:profile.dietLabel,email:email},answers:ans,context_answers:ctx,engine_version:"v11"})});}catch(e){}
+    try{fetch("https://checkpup-platform.vercel.app/api/submit-survey",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,profile:{name:profile.name,breed:profile.breed,age:profile.age,body:profile.bodyType,act:profile.activity,diet:profile.diet},answers:ans,context:ctx})});}catch(e){}
     if(f.suppress||vetReasons(f).length)setScreen("triage");
     else setScreen("results");
   };
