@@ -6,7 +6,7 @@
 <title>CheckPup — Free Dog Health Assessment</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.om/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,400&display=swap" rel="stylesheet">
 <style>
@@ -691,6 +691,7 @@ function App(){
     const sc=score(ans);
     const f=flags(ans,ctx);
     setFl(f);
+    try{fetch("https://checkpup-platform.vercel.app/api/submit-survey",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({dog:{name:profile.name,breed_id:profile.breed,breed_label:profile.breedLabel,age_id:profile.age,age_label:profile.ageLabel,body_type:profile.bodyType,activity_level:profile.activity,diet_id:profile.diet,diet_label:profile.dietLabel,email:email},answers:ans,context_answers:ctx,engine_version:"v11"})});}catch(e){}
     if(f.suppress||vetReasons(f).length)setScreen("triage");
     else setScreen("results");
   };
