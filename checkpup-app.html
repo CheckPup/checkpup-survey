@@ -116,7 +116,7 @@ const PHASE_B={
   G6:[{id:"b6-1",text:"Stool has mucus or undigested food?",w:1},{id:"b6-2",text:"Eats grass frequently?",w:.75},{id:"b6-3",text:"Loud stomach gurgling?",w:.75},{id:"b6-4",text:"Recent antibiotics?",w:1},{id:"b6-5",text:"Scooting or anal gland issues?",w:1},{id:"b6-6",text:"Seems to have food sensitivities?",w:1}],
   G7:[{id:"b7-1",text:"Unexplained weight changes?",w:1},{id:"b7-2",text:"Symmetrical hair loss?",w:1.25},{id:"b7-3",text:"Unusually irritable?",w:1},{id:"b7-4",text:"Pants a lot and drinks tons of water?",w:1.25},{id:"b7-5",text:"Pot belly with thin limbs?",w:1.25},{id:"b7-6",text:"Reproductive or fertility issues?",w:1}],
   G8:[{id:"b8-1",text:"Struggles with stairs, jumping, or cars?",w:1},{id:"b8-2",text:"Favors one leg or shifts weight?",w:1.25},{id:"b8-3",text:"Stiffness worse after rest, better moving?",w:1},{id:"b8-4",text:"Activity level dropped noticeably?",w:1},{id:"b8-5",text:"Swollen joints or muscle wasting?",w:1.25},{id:"b8-6",text:"Cold weather makes them stiffer?",w:.75}],
-  G10:[{id:"b10-1",text:"Recurring infections (ears, skin, urinary)?",w:1.25},{id:"b10-2",text:"Chronic allergies or itching?",w:1},{id:"b10-3",text:"Takes long to recover from illness?",w:1},{id:"b10-4",text:"Diagnosed with autoimmune condition?",w:1.5},{id:"b10-5",text:"Reacts badly to vaccines or meds?",w:1},{id:"b10-6",text:"Lumps, bumps, or growths?",w:1}],
+  G10:[{id:"b10-1",text:"Recurring infections (ears, skin, urinary)?",w:1.25},{id:"b10-2",text:"Chronic allergies or itching?",w:1},{id:"b10-3",text:"Takes long to recover from illness?",w:1},{id:"b10-4",text:"Diagnosed with autoimmune condition?",w:1.5,yn:true},{id:"b10-5",text:"Reacts badly to vaccines or meds?",w:1},{id:"b10-6",text:"Lumps, bumps, or growths?",w:1}],
   G11:[{id:"b11-1",text:"Pants, paces, or restless at night?",w:1},{id:"b11-2",text:"Withdrawn from the family?",w:1},{id:"b11-3",text:"Licks or guards a specific body area?",w:1.25},{id:"b11-4",text:"Posture changed (hunched, head low)?",w:1.25},{id:"b11-5",text:"Resists being picked up?",w:1},{id:"b11-6",text:"Lost appetite related to pain?",w:.75}],
   G4:[{id:"b4-1",text:"Faints or collapses?",w:0,triage:true},{id:"b4-2",text:"Bluish tongue or gums?",w:0,triage:true},{id:"b4-3",text:"Tires extremely quickly?",w:0,triage:true}],
   G9:[{id:"b9-1",text:"Accidents in the house (new)?",w:0,triage:true},{id:"b9-2",text:"Breath smells like chemicals?",w:0,triage:true},{id:"b9-3",text:"Lost weight while drinking more?",w:0,triage:true}]
@@ -209,7 +209,7 @@ function flags(ans,ctx){
   const f={};
   const tQ=[...(PHASE_B.G4||[]),...(PHASE_B.G9||[]),PHASE_A.find(q=>q.id==="a4")].filter(Boolean);
   f.triage=tQ.some(q=>q.triage&&(ans[q.id]||0)>=1);
-  f.dehydration=ctx.keeps_water===1;
+  f.dehydration=ctx.keeps_water===0;
   f.blood=ctx.blood===1;
   f.seizure=false;
   f.acute=ctx.limping_now===1||(ctx.onset<=7&&Object.values(ans).some(v=>v>=2));
@@ -622,7 +622,7 @@ function Results({scores,name,noComm,profile}){
         React.createElement("span",{style:{fontSize:12,color:"var(--muted)",textDecoration:"line-through"}},"$"+planTotal)
       ),
       /* Single CTA: first-person phrasing (+90% per research) */
-      React.createElement("button",{onClick:()=>setShowPlan(true),style:{width:"100%",padding:"16px",background:"var(--accent)",color:"#fff",fontSize:16,fontWeight:700,borderRadius:"var(--r)",marginTop:16,animation:"glow 2.5s ease-in-out infinite"}},"Get "+name+"'s Plan"),
+      React.createElement("button",{onClick:()=>window.open("https://checkpup.com","_blank"),style:{width:"100%",padding:"16px",background:"var(--accent)",color:"#fff",fontSize:16,fontWeight:700,borderRadius:"var(--r)",marginTop:16,animation:"glow 2.5s ease-in-out infinite"}},"Get "+name+"'s Plan"),
       React.createElement("div",{style:{textAlign:"center",marginTop:8}},
         React.createElement("span",{style:{fontSize:11,color:"var(--muted)"}},"Free shipping \u00B7 Cancel anytime \u00B7 Vet-formulated")
       )
@@ -641,7 +641,7 @@ function Results({scores,name,noComm,profile}){
       React.createElement("div",{style:{fontSize:28,marginBottom:8}},"\uD83E\uDDEA"),
       React.createElement("h3",{style:{fontSize:16,fontWeight:700,marginBottom:6}},"Want clinical confirmation?"),
       React.createElement("p",{style:{fontSize:13,color:"var(--sub)",lineHeight:1.55,marginBottom:14}},"Our Fur Tissue Mineral Analysis measures 30+ biomarkers to validate these findings with laboratory precision."),
-      React.createElement("button",{style:{padding:"12px 24px",background:"#7C3AED",color:"#fff",fontSize:14,fontWeight:600,borderRadius:"var(--r)"}},"Learn About Testing \u2192")
+      React.createElement("button",{onClick:()=>window.open("https://checkpup.com","_blank"),style:{padding:"12px 24px",background:"#7C3AED",color:"#fff",fontSize:14,fontWeight:600,borderRadius:"var(--r)",cursor:"pointer"}},"Learn About Testing \u2192")
     ),
 
     /* Footer disclaimer */
