@@ -131,23 +131,23 @@ const CONTEXT_QS=[
 
 const RECS={
   G1:{diet:["Cooling proteins (turkey, rabbit, white fish)","Lower-carb, moderate-fat diet","Omega-3 rich foods (sardines, salmon oil)"],
-      prods:[{n:"Canine Whole Body Support",v:"Standard Process",d:"Glandular adrenal support",p:42},{n:"Calm Capsules",v:"Natura Petz Organics",d:"Organic herbal calming blend",p:29}]},
+      prods:[{n:"Canine Whole Body Support",v:"Standard Process",d:"Glandular adrenal support"},{n:"Calm Capsules",v:"Natura Petz Organics",d:"Organic herbal calming blend"}]},
   G2:{diet:["Warming proteins (lamb, venison, chicken)","More healthy fats","Iron-rich organ meats (liver, heart)"],
-      prods:[{n:"Canine Thyroid Support",v:"Standard Process",d:"Thyroid gland nutrition",p:39},{n:"Energy & Vitality",v:"Natura Petz Organics",d:"Herbal energy support",p:32}]},
+      prods:[{n:"Canine Thyroid Support",v:"Standard Process",d:"Thyroid gland nutrition"},{n:"Energy & Vitality",v:"Natura Petz Organics",d:"Herbal energy support"}]},
   G3:{diet:["Reduce carbs significantly","High-protein, moderate-fat food","Add fiber (green beans, broccoli)"],
-      prods:[{n:"Canine Hepatic Support",v:"Standard Process",d:"Liver and metabolic support",p:41},{n:"Blood Sugar Balance",v:"Natura Petz Organics",d:"Glucose support blend",p:28}]},
+      prods:[{n:"Canine Hepatic Support",v:"Standard Process",d:"Liver and metabolic support"},{n:"Blood Sugar Balance",v:"Natura Petz Organics",d:"Glucose support blend"}]},
   G5:{diet:["Easily digestible low-fat proteins","Liver-supporting foods (beets, greens)","No processed treats or additives"],
-      prods:[{n:"Livaplex",v:"Standard Process",d:"Liver & gallbladder support",p:44},{n:"Milk Thistle Complex",v:"MediHerb",d:"High-potency liver protection",p:38}]},
+      prods:[{n:"Livaplex",v:"Standard Process",d:"Liver & gallbladder support"},{n:"Milk Thistle Complex",v:"MediHerb",d:"High-potency liver protection"}]},
   G6:{diet:["Single-protein limited ingredients","Bone broth for gut repair","Fermented foods (kefir, raw goat milk)"],
-      prods:[{n:"Canine Enteric Support",v:"Standard Process",d:"Intestinal health support",p:40},{n:"Digest Forte",v:"MediHerb",d:"Herbal digestive tonic",p:36}]},
+      prods:[{n:"Canine Enteric Support",v:"Standard Process",d:"Intestinal health support"},{n:"Digest Forte",v:"MediHerb",d:"Herbal digestive tonic"}]},
   G7:{diet:["Balanced whole-food diet with variety","Iodine-rich foods (kelp, fish)","Avoid soy products"],
-      prods:[{n:"Pituitrophin PMG",v:"Standard Process",d:"Pituitary gland support",p:37},{n:"Endocrine Balance",v:"Natura Petz Organics",d:"Hormone-balancing blend",p:33}]},
+      prods:[{n:"Pituitrophin PMG",v:"Standard Process",d:"Pituitary gland support"},{n:"Endocrine Balance",v:"Natura Petz Organics",d:"Hormone-balancing blend"}]},
   G8:{diet:["Omega-3 fatty acids (fish oil, sardines)","Collagen foods (bone broth)","Anti-inflammatory (turmeric, blueberries)"],
-      prods:[{n:"Canine Musculoskeletal",v:"Standard Process",d:"Joint and tissue support",p:43},{n:"CJ (Canine Joint)",v:"Platinum Performance",d:"Joint health with omega-3s",p:52}]},
+      prods:[{n:"Canine Musculoskeletal",v:"Standard Process",d:"Joint and tissue support"},{n:"CJ (Canine Joint)",v:"Platinum Performance",d:"Joint health with omega-3s"}]},
   G10:{diet:["Diverse whole-food diet","Medicinal mushrooms (reishi, turkey tail)","No artificial preservatives"],
-      prods:[{n:"Canine Immune Support",v:"Standard Process",d:"Whole-food immune support",p:39},{n:"Transfer Factor",v:"Researched Nutritionals",d:"Advanced immune factors",p:48}]},
+      prods:[{n:"Canine Immune Support",v:"Standard Process",d:"Whole-food immune support"},{n:"Transfer Factor",v:"Researched Nutritionals",d:"Advanced immune factors"}]},
   G11:{diet:["Anti-inflammatory omega-3s","Turmeric with black pepper","Tart cherry for pain relief"],
-      prods:[{n:"Neuroplex",v:"Standard Process",d:"Pain pathway support",p:41},{n:"CJ Plus",v:"Platinum Performance",d:"Joint + pain comfort",p:56}]}
+      prods:[{n:"Neuroplex",v:"Standard Process",d:"Pain pathway support"},{n:"CJ Plus",v:"Platinum Performance",d:"Joint + pain comfort"}]}
 };
 
 /* Transparent reasoning templates (confidence bridge) */
@@ -543,8 +543,8 @@ function Results({scores,name,noComm,profile}){
       return{...prod,group:x.g,groupName:GROUPS[x.g].name};
     });
   },[top,noComm]);
-  const planTotal=planItems.reduce((s,p)=>s+p.p,0);
-  const planSave=Math.round(planTotal*.12);
+  
+  
 
   const primary=top[0];
 
@@ -605,8 +605,7 @@ function Results({scores,name,noComm,profile}){
     /* Wellness Plan CTA (single CTA, first-person, opt-out) */
     !noComm&&planItems.length>0&&React.createElement("div",{style:{background:"var(--card)",border:"2px solid var(--accent)",borderRadius:"var(--r)",padding:"24px 20px",marginBottom:20}},
       React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}},
-        React.createElement("h3",{style:{fontSize:17,fontWeight:800}},name+"'s Wellness Plan"),
-        planSave>0&&React.createElement("span",{style:{fontSize:11,fontWeight:700,color:"var(--green)",background:"var(--green-bg)",padding:"3px 10px",borderRadius:12}},"Save $"+planSave+" as bundle")
+        React.createElement("h3",{style:{fontSize:17,fontWeight:800}},name+"'s Wellness Plan")
       ),
       React.createElement("p",{style:{fontSize:13,color:"var(--sub)",marginBottom:16,lineHeight:1.5}},"Based on "+name+"'s top findings, our veterinary nutritionists recommend:"),
       planItems.map((p,i)=>React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<planItems.length-1?"1px solid var(--border)":"none"}},
@@ -614,13 +613,9 @@ function Results({scores,name,noComm,profile}){
         React.createElement("div",{style:{flex:1}},
           React.createElement("div",{style:{fontWeight:600,fontSize:13}},p.n),
           React.createElement("div",{style:{fontSize:11,color:"var(--muted)"}},p.v+" \u2014 "+p.d)
-        ),
-        React.createElement("span",{style:{fontWeight:700,fontSize:14,color:"var(--text)"}},"$"+p.p)
+        )
       )),
-      React.createElement("div",{style:{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"14px 0 0",marginTop:12,borderTop:"2px solid var(--border)"}},
-        React.createElement("span",{style:{fontSize:14,fontWeight:700}},"Total: $"+(planTotal-planSave)+"/mo"),
-        React.createElement("span",{style:{fontSize:12,color:"var(--muted)",textDecoration:"line-through"}},"$"+planTotal)
-      ),
+      
       /* Single CTA: first-person phrasing (+90% per research) */
       React.createElement("button",{onClick:()=>window.open("https://checkpup.com","_blank"),style:{width:"100%",padding:"16px",background:"var(--accent)",color:"#fff",fontSize:16,fontWeight:700,borderRadius:"var(--r)",marginTop:16,animation:"glow 2.5s ease-in-out infinite"}},"Get "+name+"'s Plan"),
       React.createElement("div",{style:{textAlign:"center",marginTop:8}},
