@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300..800;1,9..40,400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#FEFCF9;--card:#FFFFFF;--tet:#1A1815;--sub:#7C7872;--muted:#A8A29E;--accent:#C2590A;--accent-bg:#FFF4EC;--accent-hover:#A84D09;--green:#0D7C52;--green-bg:#ECFDF3;--red:#C23030;--red-bg:#FEF2F2;--amber:#B45309;--amber-bg:#FFFBEB;--border:#F0EDE8;--r:14px;--font:'DM Sans',system-ui,sans-serif}
+:root{--bg:#FEFCF9;--card:#FFFFFF;--text:#1A1815;--sub:#7C7872;--muted:#A8A29E;--accent:#C2590A;--accent-bg:#FFF4EC;--accent-hover:#A84D09;--green:#0D7C52;--green-bg:#ECFDF3;--red:#C23030;--red-bg:#FEF2F2;--amber:#B45309;--amber-bg:#FFFBEB;--border:#F0EDE8;--r:14px;--font:'DM Sans',system-ui,sans-serif}
 html{scroll-behavior:smooth;height:100%}
 body{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;min-height:100%;line-height:1.55}
 button{font-family:var(--font);cursor:pointer;border:none;outline:none;-webkit-tap-highlight-color:transparent}
@@ -42,67 +42,93 @@ const {useState,useEffect,useCallback,useRef,useMemo}=React;
 /* ═══════════════════════════════════════
    DATA LAYER
    ═══════════════════════════════════════ */
+
 const GROUPS={
-  G1:{id:"G1",name:"Stress & Nervous System",icon:"\u26A1",short:"Stress",color:"#E8A317",
-      desc:"Your dog's nervous system may be working overtime, making it hard to rest and recover.",
-      good:"Stress response looks balanced \u2014 they can relax and recover well."},
-  G2:{id:"G2",name:"Energy & Vitality",icon:"\uD83D\uDD0B",short:"Energy",color:"#6366F1",
-      desc:"Their metabolism may be running slower than optimal, affecting daily energy.",
-      good:"Energy and vitality levels look strong."},
-  G3:{id:"G3",name:"Metabolism & Blood Sugar",icon:"\uD83C\uDF6C",short:"Metabolism",color:"#DB2777",
-      desc:"Blood sugar processing may benefit from dietary adjustments for steadier energy.",
-      good:"Blood sugar and metabolism look steady."},
-  G4:{id:"G4",name:"Heart & Breathing",icon:"\u2764\uFE0F",short:"Cardio",color:"#DC2626",triage:true},
-  G5:{id:"G5",name:"Liver & Detox",icon:"\uD83E\uDDEA",short:"Liver",color:"#0D9488",
-      desc:"The body's main filter may be under strain and could benefit from nutritional support.",
-      good:"Liver and detox pathways look healthy."},
-  G6:{id:"G6",name:"Gut & Digestion",icon:"\uD83E\uDDA0",short:"Digestion",color:"#EA580C",
-      desc:"The digestive system may need rebalancing \u2014 gut health is the foundation of overall wellness.",
-      good:"Digestion looks smooth \u2014 a healthy gut supports everything."},
-  G7:{id:"G7",name:"Hormonal Balance",icon:"\u2696\uFE0F",short:"Hormones",color:"#7C3AED",
-      desc:"Hormonal balance may be off, which can affect weight, coat, mood, and energy.",
-      good:"Hormonal balance looks good."},
-  G8:{id:"G8",name:"Joints & Mobility",icon:"\uD83E\uDDB4",short:"Joints",color:"#0284C7",
-      desc:"Joints and muscles may benefit from targeted support to maintain comfort and mobility.",
-      good:"Joints and mobility look great \u2014 keep them moving!"},
-  G9:{id:"G9",name:"Kidney Function",icon:"\uD83D\uDCA7",short:"Kidneys",color:"#0891B2",triage:true},
-  G10:{id:"G10",name:"Immune System",icon:"\uD83D\uDEE1\uFE0F",short:"Immune",color:"#059669",
-      desc:"The immune system may be out of balance \u2014 either overreacting or underperforming.",
-      good:"Immune system appears well-balanced."},
-  G11:{id:"G11",name:"Pain & Comfort",icon:"\uD83D\uDCA2",short:"Pain",color:"#E11D48",
-      desc:"There may be discomfort they can't tell you about \u2014 dogs are experts at hiding pain.",
-      good:"No significant pain signals detected."}
+  G1:{id:"G1",name:"Stress & Nervous System",icon:"⚡",short:"Stress",color:"#E8A317",
+    desc:"Your dog's nervous system may be working overtime, making it hard to rest and recover.",
+    good:"Stress response looks balanced — they can relax and recover well."},
+  G2:{id:"G2",name:"Energy & Vitality",icon:"🔋",short:"Energy",color:"#6366F1",
+    desc:"Their metabolism may be running slower than optimal, affecting daily energy.",
+    good:"Energy and vitality levels look strong."},
+  G3:{id:"G3",name:"Metabolism & Blood Sugar",icon:"🍬",short:"Metabolism",color:"#DB2777",
+    desc:"Blood sugar processing may benefit from dietary adjustments for steadier energy.",
+    good:"Blood sugar and metabolism look steady."},
+  G4:{id:"G4",name:"Heart & Breathing",icon:"❤️",short:"Cardio",color:"#DC2626",triage:true},
+  G5:{id:"G5",name:"Liver & Detox",icon:"🧪",short:"Liver",color:"#0D9488",
+    desc:"The body's main filter may be under strain and could benefit from nutritional support.",
+    good:"Liver and detox pathways look healthy."},
+  G6:{id:"G6",name:"Gut & Digestion",icon:"🦠",short:"Digestion",color:"#EA580C",
+    desc:"The digestive system may need rebalancing — gut health is the foundation of overall wellness.",
+    good:"Digestion looks smooth — a healthy gut supports everything."},
+  G7:{id:"G7",name:"Hormonal Balance",icon:"⚖️",short:"Hormones",color:"#7C3AED",
+    desc:"Hormonal balance may be off, which can affect weight, coat, mood, and energy.",
+    good:"Hormonal balance looks good."},
+  G8:{id:"G8",name:"Joints & Mobility",icon:"🦴",short:"Joints",color:"#0284C7",
+    desc:"Joints and muscles may benefit from targeted support to maintain comfort and mobility.",
+    good:"Joints and mobility look great — keep them moving!"},
+  G9:{id:"G9",name:"Kidney Function",icon:"💧",short:"Kidneys",color:"#0891B2",triage:true},
+  G10:{id:"G10",name:"Immune System",icon:"🛡️",short:"Immune",color:"#059669",
+    desc:"The immune system may be out of balance — either overreacting or underperforming.",
+    good:"Immune system appears well-balanced."},
+  G11:{id:"G11",name:"Pain & Comfort",icon:"💢",short:"Pain",color:"#E11D48",
+    desc:"There may be discomfort they can't tell you about — dogs are experts at hiding pain.",
+    good:"No significant pain signals detected."}
 };
+
 const SCORABLE=["G1","G2","G3","G5","G6","G7","G8","G10","G11"];
 const TRIAGE_IDS=["G4","G9"];
 
 const BODY_TYPES=[
-  {id:"underweight",label:"Lean / Underweight",emoji:"\uD83E\uDDAE"},
-  {id:"ideal",label:"Ideal Weight",emoji:"\uD83D\uDC15"},
-  {id:"overweight",label:"A Little Extra",emoji:"\uD83D\uDC36"},
-  {id:"obese",label:"Significantly Overweight",emoji:"\uD83D\uDC3E"}
+  {id:"underweight",label:"Lean / Underweight",emoji:"🦮"},
+  {id:"ideal",label:"Ideal Weight",emoji:"🐕"},
+  {id:"overweight",label:"A Little Extra",emoji:"🐶"},
+  {id:"obese",label:"Significantly Overweight",emoji:"🐾"}
 ];
+
 const ACTIVITY=[
-  {id:"couch",label:"Couch Potato",emoji:"\uD83D\uDE34"},
-  {id:"moderate",label:"Moderately Active",emoji:"\uD83D\uDC15\u200D\uD83E\uDDBA"},
-  {id:"active",label:"Very Active",emoji:"\uD83C\uDFC3"},
-  {id:"working",label:"Working / Sport",emoji:"\uD83D\uDCAA"}
+  {id:"couch",label:"Couch Potato",emoji:"😴"},
+  {id:"moderate",label:"Moderately Active",emoji:"🐕‍🦺"},
+  {id:"active",label:"Very Active",emoji:"🏃"},
+  {id:"working",label:"Working / Sport",emoji:"💪"}
 ];
+
 const AGES=[
-  {id:"puppy",label:"Puppy",sub:"Under 1 year"},{id:"young",label:"Young Adult",sub:"1\u20133 years"},
-  {id:"adult",label:"Adult",sub:"4\u20137 years"},{id:"senior",label:"Senior",sub:"8\u201310 years"},
+  {id:"puppy",label:"Puppy",sub:"Under 1 year"},{id:"young",label:"Young Adult",sub:"1–3 years"},
+  {id:"adult",label:"Adult",sub:"4–7 years"},{id:"senior",label:"Senior",sub:"8–10 years"},
   {id:"geriatric",label:"Golden Years",sub:"11+"}
 ];
 
-/* Phase A: 10 questions (trimmed from 15 per Outgrow optimal 6-8 + health category buffer) */
+/* CHANGE 2: Breed data */
+const BREEDS=[
+  {id:"labrador",label:"Labrador Retriever"},{id:"golden",label:"Golden Retriever"},
+  {id:"german_shepherd",label:"German Shepherd"},{id:"bulldog",label:"Bulldog"},
+  {id:"poodle",label:"Poodle"},{id:"beagle",label:"Beagle"},
+  {id:"rottweiler",label:"Rottweiler"},{id:"dachshund",label:"Dachshund"},
+  {id:"boxer",label:"Boxer"},{id:"husky",label:"Siberian Husky"},
+  {id:"cavalier",label:"Cavalier King Charles"},{id:"shih_tzu",label:"Shih Tzu"},
+  {id:"yorkie",label:"Yorkshire Terrier"},{id:"aussie",label:"Australian Shepherd"},
+  {id:"chihuahua",label:"Chihuahua"},{id:"pit_bull",label:"Pit Bull / Bully Breed"},
+  {id:"mixed",label:"Mixed Breed"},{id:"unknown",label:"I don't know"}
+];
+
+/* CHANGE 3: Diet data */
+const DIETS=[
+  {id:"kibble",label:"Kibble / Dry Food",emoji:"🥣"},
+  {id:"raw",label:"Raw Diet",emoji:"🥩"},
+  {id:"homecooked",label:"Home-Cooked",emoji:"🍳"},
+  {id:"mixed",label:"Mixed (Kibble + Fresh)",emoji:"🥗"},
+  {id:"prescription",label:"Prescription Diet",emoji:"💊"}
+];
+
+/* Phase A: 10 questions */
 const PHASE_A=[
   {id:"a1",g:"G1",text:"Does your dog seem restless, anxious, or unable to settle?",w:1,fmt:"likert"},
   {id:"a2",g:"G2",text:"Has your dog become sluggish or lost interest in activities they used to enjoy?",w:1,fmt:"likert"},
   {id:"a3",g:"G3",text:"Any unexpected weight changes?",w:1,fmt:"yn"},
   {id:"a4",g:"G4",text:"Regular coughing or labored breathing?",w:0,triage:true,fmt:"yn"},
   {id:"a5",g:"G5",text:"Yellowing in eyes, gums, or skin?",w:1.25,fmt:"yn"},
-  {id:"a6",g:"G6",text:"Does your dog have digestive issues (loose stools, gas, or constipation)?",w:1,fmt:"likert"},
-  {id:"a7",g:"G7",text:"Is your dog experiencing coat problems (thinning, dryness, or excessive shedding)?",w:1,fmt:"likert"},
+  {id:"a6",g:"G6",text:"How are their stools and digestion?",w:1,fmt:"likert"},
+  {id:"a7",g:"G7",text:"Coat changes — thinning, dry, dull, or excessive shedding?",w:1,fmt:"likert"},
   {id:"a8",g:"G8",text:"Any stiffness, limping, or difficulty getting up?",w:1,fmt:"likert"},
   {id:"a9",g:"G10",text:"Frequent skin issues, hot spots, or recurring ear infections?",w:1,fmt:"likert"},
   {id:"a10",g:"G11",text:"Do they whimper, flinch, or pull away when touched in certain areas?",w:1,fmt:"yn"}
@@ -116,38 +142,47 @@ const PHASE_B={
   G6:[{id:"b6-1",text:"Stool has mucus or undigested food?",w:1},{id:"b6-2",text:"Eats grass frequently?",w:.75},{id:"b6-3",text:"Loud stomach gurgling?",w:.75},{id:"b6-4",text:"Recent antibiotics?",w:1},{id:"b6-5",text:"Scooting or anal gland issues?",w:1},{id:"b6-6",text:"Seems to have food sensitivities?",w:1}],
   G7:[{id:"b7-1",text:"Unexplained weight changes?",w:1},{id:"b7-2",text:"Symmetrical hair loss?",w:1.25},{id:"b7-3",text:"Unusually irritable?",w:1},{id:"b7-4",text:"Pants a lot and drinks tons of water?",w:1.25},{id:"b7-5",text:"Pot belly with thin limbs?",w:1.25},{id:"b7-6",text:"Reproductive or fertility issues?",w:1}],
   G8:[{id:"b8-1",text:"Struggles with stairs, jumping, or cars?",w:1},{id:"b8-2",text:"Favors one leg or shifts weight?",w:1.25},{id:"b8-3",text:"Stiffness worse after rest, better moving?",w:1},{id:"b8-4",text:"Activity level dropped noticeably?",w:1},{id:"b8-5",text:"Swollen joints or muscle wasting?",w:1.25},{id:"b8-6",text:"Cold weather makes them stiffer?",w:.75}],
-  G10:[{id:"b10-1",text:"Recurring infections (ears, skin, urinary)?",w:1.25},{id:"b10-2",text:"Chronic allergies or itching?",w:1},{id:"b10-3",text:"Takes long to recover from illness?",w:1},{id:"b10-4",text:"Diagnosed with autoimmune condition?",w:1.5,yn:true},{id:"b10-5",text:"Reacts badly to vaccines or meds?",w:1},{id:"b10-6",text:"Lumps, bumps, or growths?",w:1}],
+  G10:[{id:"b10-1",text:"Recurring infections (ears, skin, urinary)?",w:1.25},{id:"b10-2",text:"Chronic allergies or itching?",w:1},{id:"b10-3",text:"Takes long to recover from illness?",w:1},{id:"b10-4",text:"Diagnosed with autoimmune condition?",w:1.5},{id:"b10-5",text:"Reacts badly to vaccines or meds?",w:1},{id:"b10-6",text:"Lumps, bumps, or growths?",w:1}],
   G11:[{id:"b11-1",text:"Pants, paces, or restless at night?",w:1},{id:"b11-2",text:"Withdrawn from the family?",w:1},{id:"b11-3",text:"Licks or guards a specific body area?",w:1.25},{id:"b11-4",text:"Posture changed (hunched, head low)?",w:1.25},{id:"b11-5",text:"Resists being picked up?",w:1},{id:"b11-6",text:"Lost appetite related to pain?",w:.75}],
   G4:[{id:"b4-1",text:"Faints or collapses?",w:0,triage:true},{id:"b4-2",text:"Bluish tongue or gums?",w:0,triage:true},{id:"b4-3",text:"Tires extremely quickly?",w:0,triage:true}],
   G9:[{id:"b9-1",text:"Accidents in the house (new)?",w:0,triage:true},{id:"b9-2",text:"Breath smells like chemicals?",w:0,triage:true},{id:"b9-3",text:"Lost weight while drinking more?",w:0,triage:true}]
 };
 
 const CONTEXT_QS=[
-  {id:"onset",trigger:a=>Object.values(a).some(v=>v>=2),text:"When did you first notice changes?",opts:[{v:7,l:"This week"},{v:30,l:"1\u20134 weeks ago"},{v:90,l:"1\u20133 months"},{v:180,l:"3+ months"}]},
+  {id:"onset",trigger:a=>Object.values(a).some(v=>v>=2),text:"When did you first notice changes?",opts:[{v:7,l:"This week"},{v:30,l:"1–4 weeks ago"},{v:90,l:"1–3 months"},{v:180,l:"3+ months"}]},
   {id:"keeps_water",trigger:a=>(a.a6>=2),text:"Can your dog keep water down?",yn:true},
   {id:"blood",trigger:a=>(a.a6>=2),text:"Any blood in stool or vomit?",yn:true},
   {id:"limping_now",trigger:a=>(a.a8>=2),text:"Is your dog limping right now, today?",yn:true}
 ];
 
 const RECS={
-  G1:{diet:["Cooling proteins (turkey, rabbit, white fish)","Lower-carb, moderate-fat diet","Omega-3 rich foods (sardines, salmon oil)"],
-      prods:[{n:"Canine Whole Body Support",v:"Standard Process",d:"Glandular adrenal support"},{n:"Calm Capsules",v:"Natura Petz Organics",d:"Organic herbal calming blend"}]},
-  G2:{diet:["Warming proteins (lamb, venison, chicken)","More healthy fats","Iron-rich organ meats (liver, heart)"],
-      prods:[{n:"Canine Thyroid Support",v:"Standard Process",d:"Thyroid gland nutrition"},{n:"Energy & Vitality",v:"Natura Petz Organics",d:"Herbal energy support"}]},
-  G3:{diet:["Reduce carbs significantly","High-protein, moderate-fat food","Add fiber (green beans, broccoli)"],
-      prods:[{n:"Canine Hepatic Support",v:"Standard Process",d:"Liver and metabolic support"},{n:"Blood Sugar Balance",v:"Natura Petz Organics",d:"Glucose support blend"}]},
-  G5:{diet:["Easily digestible low-fat proteins","Liver-supporting foods (beets, greens)","No processed treats or additives"],
-      prods:[{n:"Livaplex",v:"Standard Process",d:"Liver & gallbladder support"},{n:"Milk Thistle Complex",v:"MediHerb",d:"High-potency liver protection"}]},
-  G6:{diet:["Single-protein limited ingredients","Bone broth for gut repair","Fermented foods (kefir, raw goat milk)"],
-      prods:[{n:"Canine Enteric Support",v:"Standard Process",d:"Intestinal health support"},{n:"Digest Forte",v:"MediHerb",d:"Herbal digestive tonic"}]},
-  G7:{diet:["Balanced whole-food diet with variety","Iodine-rich foods (kelp, fish)","Avoid soy products"],
-      prods:[{n:"Pituitrophin PMG",v:"Standard Process",d:"Pituitary gland support"},{n:"Endocrine Balance",v:"Natura Petz Organics",d:"Hormone-balancing blend"}]},
-  G8:{diet:["Omega-3 fatty acids (fish oil, sardines)","Collagen foods (bone broth)","Anti-inflammatory (turmeric, blueberries)"],
-      prods:[{n:"Canine Musculoskeletal",v:"Standard Process",d:"Joint and tissue support"},{n:"CJ (Canine Joint)",v:"Platinum Performance",d:"Joint health with omega-3s"}]},
-  G10:{diet:["Diverse whole-food diet","Medicinal mushrooms (reishi, turkey tail)","No artificial preservatives"],
-      prods:[{n:"Canine Immune Support",v:"Standard Process",d:"Whole-food immune support"},{n:"Transfer Factor",v:"Researched Nutritionals",d:"Advanced immune factors"}]},
-  G11:{diet:["Anti-inflammatory omega-3s","Turmeric with black pepper","Tart cherry for pain relief"],
-      prods:[{n:"Neuroplex",v:"Standard Process",d:"Pain pathway support"},{n:"CJ Plus",v:"Platinum Performance",d:"Joint + pain comfort"}]}
+  G1:{nutrients:["Alkalinizing calcium (carbonate, hydroxide, citrate, gluconate)","Magnesium","Zinc","Trace minerals","Inositol","Choline","Vitamin B6, B1","Endocrine support (adrenal, hypothalamus, pituitary)","Calming herbs (Valerian, Skullcap, St. John's Wort, Kava)","Essential oils"],
+    diet:["Cooling proteins (turkey, rabbit, white fish)","Alkalinizing calcium-rich foods","Omega-3 rich foods (sardines, salmon oil)"],
+    prods:[{n:"Canine Adrenal Support",v:"Standard Process",d:"Glandular adrenal support",url:"#"},{n:"Serenity Zen",v:"Natura Petz Organics",d:"Organic herbal calming blend",url:"#"}]},
+  G2:{nutrients:["Acidifying calcium (lactate, ammonium, ACV)","Magnesium","Zinc","Vitamin E, B1","Support circulation","Iodine","Selenium","Amino acids","Probiotics","Digestive enzymes","Endocrine support (thyroid, hypothalamus)","Antimicrobial and antiviral herbs"],
+    diet:["Warming proteins (lamb, venison, chicken)","Iodine and selenium-rich foods (kelp, fish, eggs)","Iron-rich organ meats (liver, heart)"],
+    prods:[{n:"Canine Whole Body Support",v:"Standard Process",d:"Whole-body parasympathetic support",url:"#"},{n:"Ashwagandha Forte",v:"MediHerb",d:"Herbal energy and thyroid support",url:"#"}]},
+  G3:{nutrients:["Correct the diet","Improve protein quality and availability","Liver support (See Group 5)","Digestive enzymes","Probiotics","Inositol","Magnesium","Glucose tolerance factor (Chromium GTF)","Gymnema","Aloe vera juice","L-glutamine","Acetyl L-carnitine","Alpha-lipoic acid","Dill","Coriander"],
+    diet:["Reduce carbs significantly","High-protein, moderate-fat food","Add fiber (green beans, broccoli)"],
+    prods:[{n:"Canine Hepatic Support",v:"Standard Process",d:"Liver and metabolic support",url:"#"},{n:"Protegrity EZ",v:"VetClassics",d:"Digestive enzyme and probiotic blend",url:"#"}]},
+  G5:{nutrients:["Zinc, Copper, Iron","Yakriton","Choline","Pantothenic acid","L-Carnitine","PUFAs","Betaine","Vitamin A","Vitamin B2","Boron","Chromium"],
+    diet:["Easily digestible low-fat proteins","Liver-supporting foods (beets, greens)","No processed treats or additives"],
+    prods:[{n:"Canine Hepatic Support",v:"Standard Process",d:"Liver and gallbladder nutrition",url:"#"},{n:"Milk Thistle Forte",v:"MediHerb",d:"High-potency liver protection",url:"#"}]},
+  G6:{nutrients:["Digestive enzymes","Pepsin","Chlorophyll","Allantoin","Okra","Montmorillonite clay","Probiotics","Prebiotics (chicory root inulin)","Fiber","Vitamin A","Vitamin E3","Biotin","Chromium","Zinc"],
+    diet:["Single-protein limited ingredients","Bone broth for gut repair","Fermented foods (kefir, raw goat milk)"],
+    prods:[{n:"Canine Enteric Support",v:"Standard Process",d:"Intestinal health support",url:"#"},{n:"Digest Forte",v:"MediHerb",d:"Herbal digestive tonic",url:"#"}]},
+  G7:{nutrients:["Calcium","Magnesium","Zinc (prostate, uterus)","Selenium (thyroid, testes, ovaries)","Iodine (thyroid)","Copper (adrenals)","Chromium (pancreas)","Manganese (pituitary)","Vitamin C"],
+    diet:["Balanced whole-food diet with variety","Iodine-rich foods (kelp, fish)","Selenium and zinc-rich foods (eggs, pumpkin seeds)"],
+    prods:[{n:"Canine Thyroid Support",v:"Standard Process",d:"Thyroid gland nutrition",url:"#"},{n:"Endo Support",v:"Natura Petz Organics",d:"Gland and hormone support blend",url:"#"}]},
+  G8:{nutrients:["Vitamin E, A","B complex","Vitamin D","Calcium, Phosphorus, Magnesium","Manganese, Selenium","PUFAs","Chlorophyll","Liver support","Ammonium chloride","Glucosamine","Chondroitin"],
+    diet:["Omega-3 fatty acids (fish oil, sardines)","Collagen foods (bone broth)","Anti-inflammatory foods (turmeric, ginger)"],
+    prods:[{n:"Canine Musculoskeletal Support",v:"Standard Process",d:"Joint and tissue support",url:"#"},{n:"Canine CJ",v:"Platinum Performance",d:"Joint health with omega-3s",url:"#"}]},
+  G10:{nutrients:["Calcium lactate","Vitamin C","Apple cider vinegar","Spanish black radish","FOS/Prebiotics","Mannanoligosaccharides","Vitamin B6, Folic acid","Pantothenic acid","Antioxidants (Vit E, Beta-carotene, Lutein)","Zinc, Selenium","Probiotics","EFAs","Choline"],
+    diet:["Diverse whole-food diet with antioxidants","Vitamin C and zinc-rich foods","Essential fatty acids (fish oil, flaxseed)"],
+    prods:[{n:"Canine Immune System Support",v:"Standard Process",d:"Whole-food immune support",url:"#"},{n:"Mushroom Complex",v:"Standard Process",d:"Immune-modulating mushroom blend",url:"#"}]},
+  G11:{nutrients:["Optimal dietary protein in real food forms","Calcium lactate","Magnesium lactate","Inositol","B vitamins (B6, B1, B12, Niacin, Riboflavin)","Vitamin E","PUFAs","Calcium, Phosphorus, Magnesium, Zinc","Chlorophyll","Fish oils","MSM"],
+    diet:["Anti-inflammatory omega-3s (fish oil, sardines)","Turmeric and ginger for natural pain relief","Magnesium and B-vitamin rich foods"],
+    prods:[{n:"Neuroplex",v:"Standard Process",d:"Nerve and pain pathway support",url:"#"},{n:"Canine CJ",v:"Platinum Performance",d:"Joint comfort with omega-3s",url:"#"}]}
 };
 
 /* Transparent reasoning templates (confidence bridge) */
@@ -166,7 +201,7 @@ const WHY_MAP={
 /* Micro-insights (authority building during quiz) */
 const INSIGHTS={
   a1:{cond:v=>v>=2,text:n=>"Restlessness is one of the top signs of nutritional stress in dogs. Good catch."},
-  a6:{cond:v=>v>=2,text:n=>"Gut health affects everything \u2014 immunity, mood, even coat quality. This is useful to know."},
+  a6:{cond:v=>v>=2,text:n=>"Gut health affects everything — immunity, mood, even coat quality. This is useful to know."},
   a8:{cond:v=>v>=1,text:n=>"Dogs are experts at hiding pain. The fact that you noticed this matters."},
   a9:{cond:v=>v>=2,text:n=>"Recurring skin issues are almost always an immune system signal, not just a skin problem."}
 };
@@ -209,7 +244,7 @@ function flags(ans,ctx){
   const f={};
   const tQ=[...(PHASE_B.G4||[]),...(PHASE_B.G9||[]),PHASE_A.find(q=>q.id==="a4")].filter(Boolean);
   f.triage=tQ.some(q=>q.triage&&(ans[q.id]||0)>=1);
-  f.dehydration=ctx.keeps_water===0;
+  f.dehydration=ctx.keeps_water===1;
   f.blood=ctx.blood===1;
   f.seizure=false;
   f.acute=ctx.limping_now===1||(ctx.onset<=7&&Object.values(ans).some(v=>v>=2));
@@ -219,7 +254,7 @@ function flags(ans,ctx){
 function vetReasons(fl){
   const r=[];
   if(fl.triage)r.push("Potential cardiac or kidney concern detected");
-  if(fl.dehydration)r.push("Signs of dehydration \u2014 unable to keep water down");
+  if(fl.dehydration)r.push("Signs of dehydration — unable to keep water down");
   if(fl.blood)r.push("Blood reported in stool or vomit");
   if(fl.acute)r.push("Acute onset of symptoms");
   return r;
@@ -231,7 +266,6 @@ function vetReasons(fl){
 
 /* ---- Phase Bar (3-phase progress w/ endowed progress) ---- */
 function PhaseBar({phase,step,total}){
-  /* phase: 1=profile, 2=quiz, 3=results. Endowed progress starts at 8% */
   const pcts=[0,8,35,80,100];
   const base=pcts[phase]||0;
   const range=pcts[phase+1]-base;
@@ -256,46 +290,48 @@ function Landing({onStart}){
   useEffect(()=>{const iv=setInterval(()=>setTi(i=>(i+1)%TESTIMONIALS.length),4500);return()=>clearInterval(iv);},[]);
   const t=TESTIMONIALS[ti];
   return React.createElement("div",{className:"fu",style:{maxWidth:440,margin:"0 auto",padding:"40px 20px 32px",textAlign:"center"}},
-    /* Logo */
     React.createElement("img",{src:"https://checkpup.com/cdn/shop/files/Asset_1_300x_c1e1b68c-32d8-4691-918c-48b3f7fca461_384x96.png?v=1634664606",alt:"CheckPup",style:{height:36,marginBottom:28,objectFit:"contain",display:"block",margin:"0 auto 28px"}}),
-    /* Trust badge */
-    React.createElement("div",{style:{display:"inline-flex",alignItems:"center",gap:6,background:"var(--green-bg)",color:"var(--green)",padding:"6px 14px",borderRadius:20,fontSize:12,fontWeight:600,marginBottom:24}},"\uD83C\uDFE5 Vet-Developed Assessment"),
-    /* Headline: identity framing */
+    React.createElement("div",{style:{display:"inline-flex",alignItems:"center",gap:6,background:"var(--green-bg)",color:"var(--green)",padding:"6px 14px",borderRadius:20,fontSize:12,fontWeight:600,marginBottom:24}},"🏥 Vet-Developed Assessment"),
     React.createElement("h1",{style:{fontSize:28,fontWeight:800,lineHeight:1.2,marginBottom:12}},"How Healthy Is Your Dog, Really?"),
     React.createElement("p",{style:{color:"var(--sub)",fontSize:15,marginBottom:28,lineHeight:1.6}},"A free 2-minute Vet-developed assessment. Get Answers. Caring owners get clear, personalized guidance."),
-    /* How It Works (every top DTC quiz has this) */
     React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:12,marginBottom:28,textAlign:"center"}},
-      [{icon:"\uD83D\uDCCB",label:"Answer 10 Questions"},{icon:"\uD83D\uDD0D",label:"Get Analyzed"},{icon:"\u2705",label:"See Your Plan"}].map((s,i)=>
+      [{icon:"📋",label:"Answer 10 Questions"},{icon:"🔍",label:"Get Analyzed"},{icon:"✅",label:"See Your Plan"}].map((s,i)=>
         React.createElement("div",{key:i,style:{padding:"14px 8px",background:"var(--card)",borderRadius:"var(--r)",border:"1px solid var(--border)"}},
           React.createElement("div",{style:{fontSize:22,marginBottom:4}},s.icon),
           React.createElement("div",{style:{fontSize:12,fontWeight:600,color:"var(--text)"}},s.label)
         )
       )
     ),
-    /* CTA with glow */
     React.createElement("button",{onClick:onStart,style:{width:"100%",padding:"16px 0",background:"var(--accent)",color:"#fff",fontSize:16,fontWeight:700,borderRadius:"var(--r)",animation:"glow 2.5s ease-in-out infinite",marginBottom:20}},"Start Free Assessment"),
-    /* Social proof */
     React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:8,marginBottom:20}},
-      React.createElement("div",{style:{display:"flex",gap:2}},Array(5).fill(0).map((_,i)=>React.createElement("span",{key:i,style:{color:"#F59E0B",fontSize:14}},"\u2605"))),
+      React.createElement("div",{style:{display:"flex",gap:2}},Array(5).fill(0).map((_,i)=>React.createElement("span",{key:i,style:{color:"#F59E0B",fontSize:14}},"★"))),
       React.createElement("span",{style:{fontSize:13,color:"var(--sub)",fontWeight:500}},"4.9 from 12,400+ assessments")
     ),
-    /* Rotating testimonial */
     React.createElement("div",{key:ti,className:"fi",style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"16px 18px",textAlign:"left",minHeight:80}},
       React.createElement("p",{style:{fontSize:13,color:"var(--text)",lineHeight:1.55,fontStyle:"italic",marginBottom:6}},"\u201C"+t.text+"\u201D"),
-      React.createElement("p",{style:{fontSize:12,color:"var(--muted)",fontWeight:600}},"\u2014 "+t.who)
+      React.createElement("p",{style:{fontSize:12,color:"var(--muted)",fontWeight:600}},"— "+t.who)
     )
   );
 }
 
-/* ---- Profile Flow ---- */
+/* ---- Profile Flow (UPDATED: added breed + diet steps) ---- */
 function ProfileFlow({onDone}){
   const [step,setStep]=useState(0);
   const [name,setName]=useState("");
+  const [breed,setBreed]=useState("");    /* CHANGE 2: breed state */
   const [age,setAge]=useState("");
   const [body,setBody]=useState("");
   const [act,setAct]=useState("");
+  const [diet,setDiet]=useState("");      /* CHANGE 3: diet state */
   const [concerns,setConcerns]=useState("");
+  const [breedSearch,setBreedSearch]=useState("");  /* breed search filter */
+
   const advance=(fn,val)=>{fn(val);setTimeout(()=>setStep(s=>s+1),350);};
+
+  const filteredBreeds=breedSearch.trim()
+    ? BREEDS.filter(b=>b.label.toLowerCase().includes(breedSearch.toLowerCase()))
+    : BREEDS;
+
   const steps=[
     /* 0: Name */
     React.createElement("div",{key:"name",className:"sr"},
@@ -303,7 +339,18 @@ function ProfileFlow({onDone}){
       React.createElement("input",{autoFocus:true,value:name,onChange:e=>setName(e.target.value),placeholder:"e.g. Cooper",style:{width:"100%",padding:"14px 16px",fontSize:16,border:"2px solid var(--border)",borderRadius:"var(--r)",background:"var(--card)",marginBottom:16},onKeyDown:e=>{if(e.key==="Enter"&&name.trim())setStep(1);}}),
       React.createElement("button",{onClick:()=>name.trim()&&setStep(1),disabled:!name.trim(),style:{width:"100%",padding:"14px",background:name.trim()?"var(--accent)":"var(--border)",color:name.trim()?"#fff":"var(--muted)",fontSize:15,fontWeight:600,borderRadius:"var(--r)"}},"Continue")
     ),
-    /* 1: Age */
+
+    /* 1: Breed (CHANGE 2: new step) */
+    React.createElement("div",{key:"breed",className:"sr"},
+      React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:4}},"What breed is "+name+"?"),
+      React.createElement("p",{style:{color:"var(--sub)",fontSize:13,marginBottom:12}},"Breed helps us flag genetic predispositions."),
+      React.createElement("input",{value:breedSearch,onChange:e=>setBreedSearch(e.target.value),placeholder:"Search breeds\u2026",style:{width:"100%",padding:"10px 14px",fontSize:14,border:"2px solid var(--border)",borderRadius:"var(--r)",background:"var(--card)",marginBottom:10}}),
+      React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,maxHeight:300,overflowY:"auto"}},
+        filteredBreeds.map(b=>React.createElement("button",{key:b.id,onClick:()=>advance(setBreed,b.id),style:{padding:"10px 12px",background:breed===b.id?"var(--accent-bg)":"var(--card)",border:breed===b.id?"2px solid var(--accent)":"2px solid var(--border)",borderRadius:"var(--r)",textAlign:"left",fontSize:13,fontWeight:breed===b.id?700:500}},b.label))
+      )
+    ),
+
+    /* 2: Age */
     React.createElement("div",{key:"age",className:"sr"},
       React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:4}},"How old is "+name+"?"),
       React.createElement("p",{style:{color:"var(--sub)",fontSize:13,marginBottom:16}},"Age affects which health areas we prioritize."),
@@ -314,7 +361,8 @@ function ProfileFlow({onDone}){
         ))
       )
     ),
-    /* 2: Body type */
+
+    /* 3: Body type */
     React.createElement("div",{key:"body",className:"sr"},
       React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:16}},"What's "+name+"'s body type?"),
       React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}},
@@ -324,7 +372,8 @@ function ProfileFlow({onDone}){
         ))
       )
     ),
-    /* 3: Activity */
+
+    /* 4: Activity */
     React.createElement("div",{key:"act",className:"sr"},
       React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:16}},"How active is "+name+"?"),
       React.createElement("div",{style:{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}},
@@ -334,15 +383,29 @@ function ProfileFlow({onDone}){
         ))
       )
     ),
-    /* 4: Concerns (optional, skippable) */
+
+    /* 5: Diet (CHANGE 3: new step) */
+    React.createElement("div",{key:"diet",className:"sr"},
+      React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:4}},"What does "+name+" eat?"),
+      React.createElement("p",{style:{color:"var(--sub)",fontSize:13,marginBottom:16}},"Diet is the foundation of health — helps us personalize recommendations."),
+      React.createElement("div",{style:{display:"flex",flexDirection:"column",gap:10}},
+        DIETS.map(d=>React.createElement("button",{key:d.id,onClick:()=>advance(setDiet,d.id),style:{padding:"14px 16px",background:diet===d.id?"var(--accent-bg)":"var(--card)",border:diet===d.id?"2px solid var(--accent)":"2px solid var(--border)",borderRadius:"var(--r)",textAlign:"left",display:"flex",alignItems:"center",gap:10}},
+          React.createElement("span",{style:{fontSize:22}},d.emoji),
+          React.createElement("span",{style:{fontSize:14,fontWeight:diet===d.id?700:500}},d.label)
+        ))
+      )
+    ),
+
+    /* 6: Concerns (optional, skippable) */
     React.createElement("div",{key:"concerns",className:"sr"},
       React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:4}},"Anything specific you're watching?"),
-      React.createElement("p",{style:{color:"var(--sub)",fontSize:13,marginBottom:16}},"Optional \u2014 helps us tailor your results."),
+      React.createElement("p",{style:{color:"var(--sub)",fontSize:13,marginBottom:16}},"Optional — helps us tailor your results."),
       React.createElement("textarea",{value:concerns,onChange:e=>setConcerns(e.target.value),placeholder:"e.g. itchy skin, low energy, picky eater\u2026",rows:3,style:{width:"100%",padding:"12px 14px",fontSize:14,border:"2px solid var(--border)",borderRadius:"var(--r)",background:"var(--card)",resize:"none",marginBottom:12}}),
-      React.createElement("button",{onClick:()=>onDone({name:name.trim(),age,body,act,concerns}),style:{width:"100%",padding:"14px",background:"var(--accent)",color:"#fff",fontSize:15,fontWeight:600,borderRadius:"var(--r)",marginBottom:8}},"Continue to Health Check"),
-      React.createElement("button",{onClick:()=>onDone({name:name.trim(),age,body,act,concerns:""}),style:{width:"100%",padding:"10px",background:"transparent",color:"var(--muted)",fontSize:13,fontWeight:500}},"Skip for now")
+      React.createElement("button",{onClick:()=>onDone({name:name.trim(),breed,age,body,act,diet,concerns}),style:{width:"100%",padding:"14px",background:"var(--accent)",color:"#fff",fontSize:15,fontWeight:600,borderRadius:"var(--r)",marginBottom:8}},"Continue to Health Check"),
+      React.createElement("button",{onClick:()=>onDone({name:name.trim(),breed,age,body,act,diet,concerns:""}),style:{width:"100%",padding:"10px",background:"transparent",color:"var(--muted)",fontSize:13,fontWeight:500}},"Skip for now")
     )
   ];
+
   return React.createElement("div",{style:{maxWidth:440,margin:"0 auto",padding:"20px 20px 32px"}},
     React.createElement(PhaseBar,{phase:1,step:step,total:steps.length}),
     steps[step]
@@ -356,12 +419,12 @@ function QuestionScreen({questions,onDone,phase,phaseName}){
   const [insight,setInsight]=useState(null);
   const [locked,setLocked]=useState(false);
   const q=questions[qi];
+
   const pick=(id,val)=>{
     if(locked)return;
     setLocked(true);
     const next={...ans,[id]:val};
     setAns(next);
-    /* Micro insight check */
     const ins=INSIGHTS[id];
     if(ins&&ins.cond(val)){
       setInsight(ins.text("your dog"));
@@ -374,7 +437,9 @@ function QuestionScreen({questions,onDone,phase,phaseName}){
     if(qi+1<questions.length){setQi(qi+1);setLocked(false);}
     else onDone(next||ans);
   };
+
   const likertOpts=[{v:0,l:"Not at all"},{v:1,l:"Occasionally"},{v:2,l:"Often"},{v:3,l:"Constantly"}];
+
   return React.createElement("div",{style:{maxWidth:440,margin:"0 auto",padding:"0 20px 32px"}},
     React.createElement(PhaseBar,{phase:2,step:qi,total:questions.length}),
     React.createElement("div",{style:{padding:"8px 0 4px",display:"flex",justifyContent:"space-between",alignItems:"center"}},
@@ -391,47 +456,22 @@ function QuestionScreen({questions,onDone,phase,phaseName}){
           likertOpts.map(o=>React.createElement("button",{key:o.v,onClick:()=>pick(q.id,o.v),style:{padding:"14px 16px",background:ans[q.id]===o.v?"var(--accent-bg)":"var(--card)",border:ans[q.id]===o.v?"2px solid var(--accent)":"2px solid var(--border)",borderRadius:"var(--r)",textAlign:"left",fontSize:14,fontWeight:ans[q.id]===o.v?700:500,color:ans[q.id]===o.v?"var(--accent)":"var(--text)"}},o.l))
         )
     ),
-    insight&&React.createElement("div",{className:"su",style:{marginTop:16,padding:"12px 16px",background:"var(--accent-bg)",borderRadius:"var(--r)",fontSize:13,color:"var(--accent)",fontWeight:500,lineHeight:1.5,borderLeft:"3px solid var(--accent)"}},"\uD83D\uDCA1 "+insight)
+    insight&&React.createElement("div",{className:"su",style:{marginTop:16,padding:"12px 16px",background:"var(--accent-bg)",borderRadius:"var(--r)",fontSize:13,color:"var(--accent)",fontWeight:500,lineHeight:1.5,borderLeft:"3px solid var(--accent)"}},"💡 "+insight)
   );
 }
 
-/* ---- Phase Transition (celebration + social proof) ---- */
+/* ---- Phase Transition ---- */
 function PhaseTransition({signalCount,name,onContinue}){
   useEffect(()=>{const t=setTimeout(onContinue,3200);return()=>clearTimeout(t);},[]);
   return React.createElement("div",{className:"fu",style:{maxWidth:440,margin:"0 auto",padding:"60px 20px",textAlign:"center"}},
-    React.createElement("div",{style:{fontSize:48,marginBottom:16,animation:"pop .6s ease"}},"\u2705"),
+    React.createElement("div",{style:{fontSize:48,marginBottom:16,animation:"pop .6s ease"}},"✅"),
     React.createElement("h2",{style:{fontSize:22,fontWeight:800,marginBottom:8}},"Quick screen complete!"),
     React.createElement("p",{style:{color:"var(--sub)",fontSize:15,marginBottom:24,lineHeight:1.6}},
       signalCount>0?"We're picking up signals in "+signalCount+" area"+(signalCount>1?"s":"")+". Let's learn more.":"Everything looks good so far. Let's confirm with a deeper check."
     ),
     React.createElement("div",{style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"14px 18px",fontSize:13,color:"var(--sub)",lineHeight:1.5}},
-      "\uD83D\uDCC8 92% of owners who complete the full assessment discover something new about their dog's health."
+      "📈 92% of owners who complete the full assessment discover something new about their dog's health."
     )
-  );
-}
-
-/* ---- Email Capture (sunk-cost tease + skip) ---- */
-function EmailCapture({signalCount,name,onSubmit,onSkip}){
-  const [email,setEmail]=useState("");
-  const valid=email.includes("@")&&email.includes(".");
-  return React.createElement("div",{className:"fu",style:{maxWidth:440,margin:"0 auto",padding:"40px 20px",textAlign:"center"}},
-    /* Blurred tease card */
-    React.createElement("div",{style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"24px 20px",marginBottom:24,position:"relative",overflow:"hidden"}},
-      React.createElement("div",{style:{filter:"blur(6px)",opacity:.5,pointerEvents:"none"}},
-        React.createElement("div",{style:{height:8,background:"var(--border)",borderRadius:4,width:"70%",marginBottom:8}}),
-        React.createElement("div",{style:{height:8,background:"var(--border)",borderRadius:4,width:"50%",marginBottom:8}}),
-        React.createElement("div",{style:{height:8,background:"var(--border)",borderRadius:4,width:"85%"}})
-      ),
-      React.createElement("div",{style:{position:"absolute",inset:0,display:"flex",alignItems:"center",justifyContent:"center",flexDirection:"column",gap:4}},
-        React.createElement("div",{style:{fontSize:16,fontWeight:700}},"\uD83D\uDD12 "+name+"'s Health Report"),
-        React.createElement("div",{style:{fontSize:13,color:"var(--sub)"}},signalCount+" area"+(signalCount!==1?"s":"")+" identified")
-      )
-    ),
-    React.createElement("h2",{style:{fontSize:20,fontWeight:700,marginBottom:8}},"Where should we send "+name+"'s results?"),
-    React.createElement("p",{style:{color:"var(--sub)",fontSize:13,marginBottom:18}},"We'll save your full report so you can reference it anytime."),
-    React.createElement("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"your@email.com",style:{width:"100%",padding:"14px 16px",fontSize:15,border:"2px solid var(--border)",borderRadius:"var(--r)",background:"var(--card)",marginBottom:12},onKeyDown:e=>{if(e.key==="Enter"&&valid)onSubmit(email);}}),
-    React.createElement("button",{onClick:()=>valid&&onSubmit(email),disabled:!valid,style:{width:"100%",padding:"14px",background:valid?"var(--accent)":"var(--border)",color:valid?"#fff":"var(--muted)",fontSize:15,fontWeight:600,borderRadius:"var(--r)",marginBottom:12}},"Unlock My Report"),
-    React.createElement("button",{onClick:onSkip,style:{background:"transparent",color:"var(--muted)",fontSize:12,fontWeight:500,padding:"8px"}},"Skip \u2014 view results without saving")
   );
 }
 
@@ -464,7 +504,7 @@ function ContextQ({questions,onDone}){
   );
 }
 
-/* ---- Analyzing (body-system specific animation) ---- */
+/* ---- Analyzing ---- */
 function Analyzing({systems,onDone}){
   const [done,setDone]=useState([]);
   const steps=["Reviewing your answers","Checking "+systems.slice(0,3).map(g=>GROUPS[g]?.short||g).join(", "),"Cross-referencing patterns","Building personalized report"];
@@ -490,14 +530,14 @@ function Analyzing({systems,onDone}){
 function Triage({reasons,name}){
   return React.createElement("div",{className:"fu",style:{maxWidth:440,margin:"0 auto",padding:"40px 20px"}},
     React.createElement("div",{style:{background:"var(--red-bg)",border:"1px solid #FCA5A5",borderRadius:"var(--r)",padding:"24px 20px",textAlign:"center",marginBottom:24}},
-      React.createElement("div",{style:{fontSize:36,marginBottom:12}},"\uD83D\uDEA8"),
+      React.createElement("div",{style:{fontSize:36,marginBottom:12}},"🚨"),
       React.createElement("h2",{style:{fontSize:20,fontWeight:800,color:"var(--red)",marginBottom:8}},"Please see a veterinarian"),
       React.createElement("p",{style:{fontSize:14,color:"var(--text)",lineHeight:1.6}},name+"'s assessment flagged signals that need professional evaluation as soon as possible.")
     ),
     React.createElement("div",{style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"20px"}},
       React.createElement("h3",{style:{fontSize:15,fontWeight:700,marginBottom:12}},"What we found:"),
       reasons.map((r,i)=>React.createElement("div",{key:i,style:{display:"flex",gap:8,padding:"8px 0",borderBottom:i<reasons.length-1?"1px solid var(--border)":"none"}},
-        React.createElement("span",{style:{color:"var(--red)",fontWeight:700}},"\u26A0"),
+        React.createElement("span",{style:{color:"var(--red)",fontWeight:700}},"⚠"),
         React.createElement("span",{style:{fontSize:14,lineHeight:1.5}},r)
       ))
     ),
@@ -525,127 +565,194 @@ function Radar({data,size}){
   );
 }
 
-/* ---- Results (THE conversion page) ---- */
-function Results({scores,name,noComm,profile}){
+/* ---- CHANGE 1: Email Capture — inline CTA card (prominent, in results flow) ---- */
+function EmailCaptureInline({name,onSubmit,onSkip}){
+  const [email,setEmail]=useState("");
+  const valid=email.includes("@")&&email.includes(".");
+  return React.createElement("div",{style:{background:"linear-gradient(135deg,var(--accent-bg),#FFE8D6)",border:"2px solid var(--accent)",borderRadius:"var(--r)",padding:"28px 22px",marginBottom:24,position:"relative",overflow:"hidden"}},
+    /* Decorative accent bar */
+    React.createElement("div",{style:{position:"absolute",top:0,left:0,right:0,height:4,background:"var(--accent)"}}),
+    React.createElement("div",{style:{textAlign:"center"}},
+      React.createElement("h3",{style:{fontSize:20,fontWeight:800,marginBottom:6,color:"var(--text)"}},"Get "+name+"'s Full Action Plan"),
+      React.createElement("p",{style:{color:"var(--sub)",fontSize:14,marginBottom:20,lineHeight:1.5,maxWidth:320,margin:"0 auto 20px"}},"We'll email you "+name+"'s personalized supplement guide, diet tips, and a 90-day check-in reminder — free."),
+      React.createElement("div",{style:{display:"flex",gap:8,maxWidth:360,margin:"0 auto"}},
+        React.createElement("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"your@email.com",style:{flex:1,padding:"14px 16px",fontSize:15,border:"2px solid "+(valid?"var(--accent)":"var(--border)"),borderRadius:"var(--r)",background:"#fff",minWidth:0},onKeyDown:e=>{if(e.key==="Enter"&&valid)onSubmit(email);}}),
+        React.createElement("button",{onClick:()=>valid&&onSubmit(email),disabled:!valid,style:{padding:"14px 20px",background:valid?"var(--accent)":"var(--border)",color:valid?"#fff":"var(--muted)",fontSize:15,fontWeight:700,borderRadius:"var(--r)",whiteSpace:"nowrap",animation:valid?"glow 2.5s ease-in-out infinite":"none"}},"Send It")
+      ),
+      React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"center",gap:12,marginTop:12}},
+        React.createElement("span",{style:{fontSize:11,color:"var(--sub)"}},"🔒 No spam, ever"),
+        React.createElement("span",{style:{fontSize:11,color:"var(--sub)"}},"•"),
+        React.createElement("span",{style:{fontSize:11,color:"var(--sub)"}},"Unsubscribe anytime"),
+        React.createElement("span",{style:{fontSize:11,color:"var(--sub)"}},"•"),
+        React.createElement("button",{onClick:onSkip,style:{background:"transparent",color:"var(--muted)",fontSize:11,fontWeight:500,padding:0,textDecoration:"underline"}},"Skip")
+      )
+    )
+  );
+}
+/* ---- Sticky bottom email bar (shows after scroll, hard to miss) ---- */
+function EmailStickyBar({name,onSubmit}){
+  const [email,setEmail]=useState("");
+  const [visible,setVisible]=useState(false);
+  const valid=email.includes("@")&&email.includes(".");
+  useEffect(()=>{
+    const onScroll=()=>setVisible(window.scrollY>400);
+    window.addEventListener("scroll",onScroll);
+    return()=>window.removeEventListener("scroll",onScroll);
+  },[]);
+  if(!visible)return null;
+  return React.createElement("div",{style:{position:"fixed",bottom:0,left:0,right:0,zIndex:100,background:"var(--card)",borderTop:"2px solid var(--accent)",padding:"12px 16px",boxShadow:"0 -4px 24px rgba(0,0,0,.1)",animation:"slideUp .3s ease"}},
+    React.createElement("div",{style:{maxWidth:440,margin:"0 auto",display:"flex",alignItems:"center",gap:8}},
+      React.createElement("div",{style:{flex:1,fontSize:12,fontWeight:600,color:"var(--text)",lineHeight:1.3}},"📩 Email "+name+"'s report + action plan"),
+      React.createElement("input",{type:"email",value:email,onChange:e=>setEmail(e.target.value),placeholder:"your@email.com",style:{width:160,padding:"10px 12px",fontSize:13,border:"2px solid var(--border)",borderRadius:10,background:"var(--bg)"},onKeyDown:e=>{if(e.key==="Enter"&&valid)onSubmit(email);}}),
+      React.createElement("button",{onClick:()=>valid&&onSubmit(email),disabled:!valid,style:{padding:"10px 16px",background:valid?"var(--accent)":"var(--border)",color:valid?"#fff":"var(--muted)",fontSize:13,fontWeight:700,borderRadius:10}},"Go")
+    )
+  );
+}
+
+/* ---- CHANGES 4-7: Results (redesigned with 3-tier, contextual recs, retest CTA, no bundle) ---- */
+function Results({scores,name,noComm,profile,onSaveEmail}){
   const all=ranked(scores);
-  const top=all.filter(x=>x.conf>=.45);
-  const mild=all.filter(x=>x.conf>=.25&&x.conf<.45);
-  const good=all.filter(x=>x.conf<.25);
-  const [showPlan,setShowPlan]=useState(false);
+  const top=all.filter(x=>x.conf>=.45);         /* NEEDS ATTENTION */
+  const watch=all.filter(x=>x.conf>=.25&&x.conf<.45);  /* KEEP AN EYE ON */
+  const good=all.filter(x=>x.conf<.25);         /* LOOKING GOOD */
   const [expandedIdx,setExpandedIdx]=useState(null);
+  const [emailSaved,setEmailSaved]=useState(false);
 
-  /* Build personalized plan */
-  const planItems=useMemo(()=>{
-    if(noComm)return[];
-    return top.slice(0,4).filter(x=>RECS[x.g]).map(x=>{
-      const rec=RECS[x.g];
-      const prod=rec.prods[0];
-      return{...prod,group:x.g,groupName:GROUPS[x.g].name};
-    });
-  },[top,noComm]);
-  
-  
+  const handleEmail=(e)=>{onSaveEmail(e);setEmailSaved(true);};
 
-  const primary=top[0];
+  /* Render a body system card with contextual product recs (CHANGE 5) */
+  const SystemCard=({item,tier})=>{
+    const g=item.g;
+    const sev=severity(item.conf);
+    const rec=RECS[g];
+    const isExpanded=expandedIdx===g;
+
+    return React.createElement("div",{key:g,style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"16px",marginBottom:10}},
+      React.createElement("div",{onClick:()=>setExpandedIdx(isExpanded?null:g),style:{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}},
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:10}},
+          React.createElement("span",{style:{fontSize:20}},GROUPS[g]?.icon),
+          React.createElement("div",null,
+            React.createElement("div",{style:{fontWeight:600,fontSize:14}},GROUPS[g]?.name),
+            React.createElement("div",{style:{fontSize:12,color:"var(--sub)",marginTop:2}},WHY_MAP[g]?WHY_MAP[g](name).substring(0,60)+"…":GROUPS[g]?.desc?.substring(0,60)+"…")
+          )
+        ),
+        React.createElement("div",{style:{display:"flex",alignItems:"center",gap:6}},
+          React.createElement("span",{style:{fontSize:11,fontWeight:700,color:sev.color,background:sev.color+"18",padding:"2px 8px",borderRadius:10}},sev.lb),
+          React.createElement("span",{style:{fontSize:12,color:"var(--muted)",transform:isExpanded?"rotate(180deg)":"rotate(0)",transition:"transform .2s"}},"▼")
+        )
+      ),
+      isExpanded&&React.createElement("div",{className:"su",style:{marginTop:12,paddingTop:12,borderTop:"1px solid var(--border)"}},
+        /* Why explanation */
+        React.createElement("p",{style:{fontSize:13,color:"var(--text)",lineHeight:1.6,marginBottom:12}},WHY_MAP[g]?WHY_MAP[g](name):GROUPS[g]?.desc),
+
+        /* Diet tips */
+        rec&&rec.diet&&React.createElement("div",{style:{marginBottom:12}},
+          React.createElement("div",{style:{fontSize:12,fontWeight:700,color:"var(--green)",textTransform:"uppercase",letterSpacing:".03em",marginBottom:6}},"🥦 Diet Tips"),
+          rec.diet.map((d,i)=>React.createElement("div",{key:i,style:{display:"flex",gap:6,padding:"3px 0",fontSize:13,color:"var(--text)"}},
+            React.createElement("span",{style:{color:"var(--green)"}},"✓"),d
+          ))
+        ),
+
+        /* Key nutrients from Frick book */
+        rec&&rec.nutrients&&rec.nutrients.length>0&&React.createElement("div",{style:{marginBottom:12}},
+          React.createElement("div",{style:{fontSize:12,fontWeight:700,color:"#e08700",textTransform:"uppercase",letterSpacing:".03em",marginBottom:6}},"💊 Key Nutrients"),
+          React.createElement("div",{style:{display:"flex",flexWrap:"wrap",gap:6}},
+            rec.nutrients.map((n,i)=>React.createElement("span",{key:i,style:{fontSize:11,background:"#fff3e0",color:"#b36b00",padding:"3px 10px",borderRadius:12,border:"1px solid #ffe0b2"}},n))
+          )
+        ),
+
+        /* Product recommendation (no price — affiliate links TBD) */
+        rec&&rec.prods&&rec.prods[0]&&React.createElement("div",{style:{background:sev.bg,borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}},
+          React.createElement("div",{style:{flex:1}},
+            React.createElement("div",{style:{fontSize:13,fontWeight:600}},rec.prods[0].n),
+            React.createElement("div",{style:{fontSize:11,color:"var(--sub)"}},rec.prods[0].v+" — "+rec.prods[0].d)
+          ),
+          React.createElement("span",{style:{fontSize:12,fontWeight:600,color:sev.color}},"Learn more →")
+        )
+      )
+    );
+  };
 
   return React.createElement("div",{className:"fu",style:{maxWidth:440,margin:"0 auto",padding:"20px 20px 60px"}},
     /* Logo */
     React.createElement("div",{style:{textAlign:"center",marginBottom:16}},
       React.createElement("img",{src:"https://checkpup.com/cdn/shop/files/Asset_1_300x_c1e1b68c-32d8-4691-918c-48b3f7fca461_384x96.png?v=1634664606",alt:"CheckPup",style:{height:28,objectFit:"contain"}})
     ),
+
     /* Header */
     React.createElement("div",{style:{textAlign:"center",marginBottom:24}},
       React.createElement("h1",{style:{fontSize:24,fontWeight:800,marginBottom:4}},name+"'s Health Report"),
       React.createElement("p",{style:{color:"var(--sub)",fontSize:13}},"Personalized assessment based on your answers")
     ),
 
-    /* Primary finding card (hero) */
-    primary&&React.createElement("div",{style:{background:severity(primary.conf).bg,border:"1px solid "+severity(primary.conf).color+"33",borderRadius:"var(--r)",padding:"20px",marginBottom:16}},
-      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:8}},
-        React.createElement("span",{style:{fontSize:22}},GROUPS[primary.g]?.icon),
-        React.createElement("div",null,
-          React.createElement("div",{style:{fontWeight:700,fontSize:15}},GROUPS[primary.g]?.name),
-          React.createElement("span",{style:{fontSize:11,fontWeight:700,color:severity(primary.conf).color,background:severity(primary.conf).color+"18",padding:"2px 8px",borderRadius:10}},severity(primary.conf).lb)
-        )
-      ),
-      /* WHY explanation (confidence bridge) */
-      React.createElement("p",{style:{fontSize:13,color:"var(--text)",lineHeight:1.6,marginTop:8}},WHY_MAP[primary.g]?WHY_MAP[primary.g](name):GROUPS[primary.g]?.desc)
-    ),
-
     /* Radar chart */
-    all.filter(x=>x.conf>.01).length>=3&&React.createElement("div",{style:{margin:"20px 0"}},
+    all.filter(x=>x.conf>.01).length>=3&&React.createElement("div",{style:{margin:"0 0 24px"}},
       React.createElement(Radar,{data:all})
     ),
 
-    /* Other areas to watch */
-    top.length>1&&React.createElement("div",{style:{marginBottom:16}},
-      React.createElement("h3",{style:{fontSize:15,fontWeight:700,marginBottom:10}},"Other Areas to Watch"),
-      top.slice(1).map((f,i)=>React.createElement("div",{key:f.g,style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"14px 16px",marginBottom:8}},
-        React.createElement("div",{onClick:()=>setExpandedIdx(expandedIdx===i?null:i),style:{display:"flex",alignItems:"center",justifyContent:"space-between",cursor:"pointer"}},
-          React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8}},
-            React.createElement("span",{style:{fontSize:18}},GROUPS[f.g]?.icon),
-            React.createElement("span",{style:{fontWeight:600,fontSize:14}},GROUPS[f.g]?.name)
-          ),
-          React.createElement("span",{style:{fontSize:11,fontWeight:700,color:severity(f.conf).color,background:severity(f.conf).color+"18",padding:"2px 8px",borderRadius:10}},severity(f.conf).lb)
-        ),
-        expandedIdx===i&&React.createElement("div",{className:"su",style:{marginTop:10,paddingTop:10,borderTop:"1px solid var(--border)"}},
-          React.createElement("p",{style:{fontSize:13,color:"var(--sub)",lineHeight:1.55}},WHY_MAP[f.g]?WHY_MAP[f.g](name):GROUPS[f.g]?.desc)
-        )
-      ))
+    /* ═══ TIER 1: NEEDS ATTENTION ═══ (CHANGE 4) */
+    top.length>0&&React.createElement("div",{style:{marginBottom:20}},
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
+        React.createElement("div",{style:{width:10,height:10,borderRadius:"50%",background:"var(--red)"}}),
+        React.createElement("h3",{style:{fontSize:15,fontWeight:700,color:"var(--red)"}},"Needs Attention ("+top.length+")")
+      ),
+      top.map(f=>React.createElement(SystemCard,{key:f.g,item:f,tier:"attention"}))
     ),
 
-    /* Looking Good section */
+    /* ═══ TIER 2: KEEP AN EYE ON ═══ */
+    watch.length>0&&React.createElement("div",{style:{marginBottom:20}},
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
+        React.createElement("div",{style:{width:10,height:10,borderRadius:"50%",background:"var(--amber)"}}),
+        React.createElement("h3",{style:{fontSize:15,fontWeight:700,color:"var(--amber)"}},"Keep an Eye On ("+watch.length+")")
+      ),
+      watch.map(f=>React.createElement(SystemCard,{key:f.g,item:f,tier:"watch"}))
+    ),
+
+    /* ═══ TIER 3: LOOKING GOOD ═══ */
     good.length>0&&React.createElement("div",{style:{background:"var(--green-bg)",border:"1px solid #86EFAC",borderRadius:"var(--r)",padding:"16px 18px",marginBottom:20}},
-      React.createElement("h3",{style:{fontSize:14,fontWeight:700,color:"var(--green)",marginBottom:8}},"\u2705 Looking Good"),
+      React.createElement("div",{style:{display:"flex",alignItems:"center",gap:8,marginBottom:10}},
+        React.createElement("div",{style:{width:10,height:10,borderRadius:"50%",background:"var(--green)"}}),
+        React.createElement("h3",{style:{fontSize:14,fontWeight:700,color:"var(--green)"}},"Looking Good ("+good.length+")")
+      ),
       React.createElement("div",{style:{display:"flex",flexWrap:"wrap",gap:6}},
         good.map(f=>React.createElement("span",{key:f.g,style:{fontSize:12,fontWeight:500,color:"var(--green)",background:"#fff",padding:"4px 10px",borderRadius:12}},GROUPS[f.g]?.icon+" "+GROUPS[f.g]?.short))
       )
     ),
 
-    /* Wellness Plan CTA (single CTA, first-person, opt-out) */
-    !noComm&&planItems.length>0&&React.createElement("div",{style:{background:"var(--card)",border:"2px solid var(--accent)",borderRadius:"var(--r)",padding:"24px 20px",marginBottom:20}},
-      React.createElement("div",{style:{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}},
-        React.createElement("h3",{style:{fontSize:17,fontWeight:800}},name+"'s Wellness Plan")
-      ),
-      React.createElement("p",{style:{fontSize:13,color:"var(--sub)",marginBottom:16,lineHeight:1.5}},"Based on "+name+"'s top findings, our veterinary nutritionists recommend:"),
-      planItems.map((p,i)=>React.createElement("div",{key:i,style:{display:"flex",alignItems:"center",gap:10,padding:"10px 0",borderBottom:i<planItems.length-1?"1px solid var(--border)":"none"}},
-        React.createElement("span",{style:{fontSize:16}},GROUPS[p.group]?.icon),
-        React.createElement("div",{style:{flex:1}},
-          React.createElement("div",{style:{fontWeight:600,fontSize:13}},p.n),
-          React.createElement("div",{style:{fontSize:11,color:"var(--muted)"}},p.v+" \u2014 "+p.d)
-        )
-      )),
-      
-      /* Single CTA: first-person phrasing (+90% per research) */
-      React.createElement("button",{onClick:()=>window.open("https://checkpup.com","_blank"),style:{width:"100%",padding:"16px",background:"var(--accent)",color:"#fff",fontSize:16,fontWeight:700,borderRadius:"var(--r)",marginTop:16,animation:"glow 2.5s ease-in-out infinite"}},"Get "+name+"'s Plan"),
-      React.createElement("div",{style:{textAlign:"center",marginTop:8}},
-        React.createElement("span",{style:{fontSize:11,color:"var(--muted)"}},"Free shipping \u00B7 Cancel anytime \u00B7 Vet-formulated")
-      )
+    /* ═══ EMAIL CAPTURE — primary CTA, right after health tiers ═══ */
+    !emailSaved&&!noComm&&React.createElement(EmailCaptureInline,{name:name,onSubmit:handleEmail,onSkip:()=>setEmailSaved(true)}),
+
+    emailSaved&&React.createElement("div",{style:{background:"var(--green-bg)",borderRadius:"var(--r)",padding:"16px 20px",marginBottom:24,textAlign:"center"}},
+      React.createElement("div",{style:{fontSize:13,color:"var(--green)",fontWeight:600}},"✅ "+name+"'s report sent! Check your inbox for the full action plan."),
+      React.createElement("div",{style:{fontSize:11,color:"var(--green)",marginTop:4,opacity:.7}},"Includes supplement guide, diet tips, and 90-day check-in reminder")
     ),
 
-    /* Diet recommendations */
-    top.length>0&&RECS[top[0].g]&&React.createElement("div",{style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"20px",marginBottom:20}},
-      React.createElement("h3",{style:{fontSize:15,fontWeight:700,marginBottom:12}},"\uD83E\uDD66 Dietary Guidance for "+name),
-      RECS[top[0].g].diet.map((d,i)=>React.createElement("div",{key:i,style:{display:"flex",gap:8,padding:"6px 0",fontSize:13,color:"var(--text)",lineHeight:1.5}},
-        React.createElement("span",{style:{color:"var(--green)",fontWeight:700}},"\u2713"),d
-      ))
-    ),
-
-    /* Diagnostic bridge: "Confirm Your Results" (not buried upsell) */
+    /* Diagnostic bridge: test kit CTA */
     !noComm&&React.createElement("div",{style:{background:"linear-gradient(135deg,#F5F3FF,#EDE9FE)",border:"1px solid #C4B5FD",borderRadius:"var(--r)",padding:"20px",marginBottom:20,textAlign:"center"}},
-      React.createElement("div",{style:{fontSize:28,marginBottom:8}},"\uD83E\uDDEA"),
+      React.createElement("div",{style:{fontSize:28,marginBottom:8}},"🧪"),
       React.createElement("h3",{style:{fontSize:16,fontWeight:700,marginBottom:6}},"Want clinical confirmation?"),
       React.createElement("p",{style:{fontSize:13,color:"var(--sub)",lineHeight:1.55,marginBottom:14}},"Our Fur Tissue Mineral Analysis measures 30+ biomarkers to validate these findings with laboratory precision."),
-      React.createElement("button",{onClick:()=>window.open("https://checkpup.com","_blank"),style:{padding:"12px 24px",background:"#7C3AED",color:"#fff",fontSize:14,fontWeight:600,borderRadius:"var(--r)",cursor:"pointer"}},"Learn About Testing \u2192")
+      React.createElement("button",{style:{padding:"12px 24px",background:"#7C3AED",color:"#fff",fontSize:14,fontWeight:600,borderRadius:"var(--r)"}},"Learn About Testing →")
+    ),
+
+    /* CHANGE 6: Retest CTA */
+    React.createElement("div",{style:{background:"var(--card)",border:"1px solid var(--border)",borderRadius:"var(--r)",padding:"20px",marginBottom:20,textAlign:"center"}},
+      React.createElement("div",{style:{fontSize:24,marginBottom:8}},"🔄"),
+      React.createElement("h3",{style:{fontSize:15,fontWeight:700,marginBottom:6}},"Track "+name+"'s Progress"),
+      React.createElement("p",{style:{fontSize:13,color:"var(--sub)",lineHeight:1.55,marginBottom:14}},"Health changes over time. Reassess in 90 days to catch shifts early and see how "+name+"'s scores compare."),
+      React.createElement("button",{style:{padding:"12px 24px",background:"var(--accent)",color:"#fff",fontSize:14,fontWeight:600,borderRadius:"var(--r)"}},"Set a 90-Day Reminder")
     ),
 
     /* Footer disclaimer */
-    React.createElement("p",{style:{fontSize:11,color:"var(--muted)",textAlign:"center",lineHeight:1.5,marginTop:12}},"This assessment is for informational purposes only and does not replace veterinary care. Always consult your veterinarian for medical decisions.")
+    React.createElement("p",{style:{fontSize:11,color:"var(--muted)",textAlign:"center",lineHeight:1.5,marginTop:12,paddingBottom:emailSaved?12:60}},"This assessment is for informational purposes only and does not replace veterinary care. Always consult your veterinarian for medical decisions."),
+
+    /* Sticky bottom bar — appears on scroll if email not yet captured */
+    !emailSaved&&!noComm&&React.createElement(EmailStickyBar,{name:name,onSubmit:handleEmail})
   );
 }
 
 /* ═══════════════════════════════════════
-   APP ORCHESTRATOR
+   APP ORCHESTRATOR (CHANGE 1: email removed from mid-flow)
    ═══════════════════════════════════════ */
 function App(){
   const [screen,setScreen]=useState("landing");
@@ -655,41 +762,50 @@ function App(){
   const [email,setEmail]=useState("");
   const [adaptGrps,setAdaptGrps]=useState([]);
   const [fl,setFl]=useState({});
+
   const name=profile.name||"Your Dog";
 
   const onLanding=()=>setScreen("profile");
+
   const onProfile=(p)=>{setProfile(p);setScreen("phaseA");};
+
   const onPhaseA=(a)=>{
     const merged={...ans,...a};setAns(merged);
     const sc=score(merged);
-    const sigs=SCORABLE.filter(g=>sc[g].sig>.15).length;
     setAdaptGrps(adaptiveGroups(sc));
     setScreen("transition");
   };
-  const onTransition=()=>setScreen("email");
-  const onEmail=(e)=>{setEmail(e);goContext();};
-  const emailSkip=()=>goContext();
+
+  /* CHANGE 1: transition goes directly to context (skip email gate) */
+  const onTransition=()=>goContext();
+
   const goContext=()=>{
     const active=CONTEXT_QS.filter(q=>q.trigger(ans));
     if(active.length)setScreen("context");
     else goDeepDive();
   };
+
   const onContext=(c)=>{setCtx(c);goDeepDive();};
+
   const goDeepDive=()=>{
     if(adaptGrps.length)setScreen("deepdive");
     else setScreen("analyzing");
   };
+
   const onDeepDive=(a)=>{
     const merged={...ans,...a};setAns(merged);setScreen("analyzing");
   };
+
   const onAnalyzing=()=>{
     const sc=score(ans);
     const f=flags(ans,ctx);
     setFl(f);
-    try{fetch("https://checkpup-platform.vercel.app/api/submit-survey",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:email,profile:{name:profile.name,breed:profile.breed,age:profile.age,body:profile.bodyType,act:profile.activity,diet:profile.diet},answers:ans,context:ctx})});}catch(e){}
     if(f.suppress||vetReasons(f).length)setScreen("triage");
     else setScreen("results");
   };
+
+  /* CHANGE 1: email saved from results page */
+  const onSaveEmail=(e)=>{setEmail(e);};
 
   const sc=score(ans);
   const signalCount=SCORABLE.filter(g=>sc[g].sig>.15).length;
@@ -701,12 +817,11 @@ function App(){
     case "profile":return React.createElement(ProfileFlow,{onDone:onProfile});
     case "phaseA":return React.createElement(QuestionScreen,{questions:PHASE_A,onDone:onPhaseA,phase:2,phaseName:"Quick Screen"});
     case "transition":return React.createElement(PhaseTransition,{signalCount:signalCount,name:name,onContinue:onTransition});
-    case "email":return React.createElement(EmailCapture,{signalCount:signalCount,name:name,onSubmit:onEmail,onSkip:emailSkip});
     case "context":return React.createElement(ContextQ,{questions:activeCtx,onDone:onContext});
     case "deepdive":return React.createElement(QuestionScreen,{questions:deepQs,onDone:onDeepDive,phase:2,phaseName:"Deep Dive"});
     case "analyzing":return React.createElement(Analyzing,{systems:adaptGrps,onDone:onAnalyzing});
     case "triage":return React.createElement(Triage,{reasons:vetReasons(fl),name:name});
-    case "results":return React.createElement(Results,{scores:sc,name:name,noComm:fl.suppress,profile:profile});
+    case "results":return React.createElement(Results,{scores:sc,name:name,noComm:fl.suppress,profile:profile,onSaveEmail:onSaveEmail});
     default:return null;
   }
 }
